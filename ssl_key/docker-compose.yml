@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  nginx:
+    image: nginx
+    container_name: temp_nginx_for_ssl_key
+    volumes:
+      - ${path_to_webroot}:/usr/share/nginx/html
+    ports: 
+      - 80:80
+    
+  certbot:
+    depends_on:
+      - nginx
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ${path_to_save_ssl_key}:/etc/letsencrypt
+      - ${path_to_webroot}:/usr/share/nginx/html
+    command: certonly --webroot --webroot-path=/usr/share/nginx/html --email ${DNS_email} --agree-tos --no-eff-email --force-renewal -d ${domain_name}
