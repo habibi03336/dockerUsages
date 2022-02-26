@@ -6,6 +6,12 @@ services:
     container_name: temp_nginx_for_ssl_key
     volumes:
       - ${path_to_webroot}:/usr/share/nginx/html
+      - ${path_to_save_ssl_key}:/etc/letsencrypt
+    command: >
+      bash -c "nginx 
+      && apt-get -y install curl
+      && curl --output /etc/letsencrypt/options-ssl-nginx.conf --url https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
+      && openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048"
     ports: 
       - 80:80
     
